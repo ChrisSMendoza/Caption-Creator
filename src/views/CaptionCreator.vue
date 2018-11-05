@@ -1,7 +1,7 @@
 <template>
   
-	<main class="full-vp">
-
+	<main>
+		Caption Creator
 		
 
 	</main>
