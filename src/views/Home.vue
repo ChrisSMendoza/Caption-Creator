@@ -1,56 +1,8 @@
 <template>
   
 	<main class="full-vp">
-	
-		<!-- catalog header -->
-		<vs-row vs-justify="center" vs-align="center" vs-w="12">
 
-			<!-- logo, company name, section name -->
-			<vs-col class="ph-text-center " vs-w="4" vs-xs="12">
-				<h1>Apparel Pharaoh</h1>
-				<h4>Catalog</h4>
-			</vs-col>
-
-		</vs-row>
-
-
-		<!-- rows of apparel items -->
-		<vs-row 
-			vs-justify="space-around" 
-			vs-align="center"
-			vs-w="12"
-			type="flex"
-			class="catalog-wrapper">
-			
-			<vs-col 
-				v-for="item,index in catalogItems"
-				:key="index"
-
-				type="flex"
-				vs-xs="12" vs-sm="5" vs-lg="4"
-
-				class="catalog-col"
-			>
-				<vs-card actionable class="catalog-item" fixedHeight>
-
-					<div slot="header">
-						<p>{{item.name}}</p>
-					</div>
-
-					<div slot="media">
-						<img :src="item.imgSrc" class="catalog-item-img">
-					</div>
-
-					<div slot="footer">
-						<p>
-							{{item.price}}
-						</p>
-					</div>
-				</vs-card>
-
-			</vs-col>
-
-		</vs-row>
+		
 
 	</main>
 
@@ -66,82 +18,132 @@ export default {
 	data() {
 		return {
 
-			catalogItems: [
+			// test data: user enters images and we receive concepts for each
+			clarifaiResponse: [
 				{
-					name: "Versace",
-					price: "$300",
-					imgSrc: "black_dress.png"
+					data: {
+						concepts: ["Man", "Rap", "Car", "Road", "City"]
+					}
 				},
 				{
-					name: "Supreme",
-					price: "$60",
-					imgSrc: "suit.jpg"
-				},
-				{
-					name: "Gucci Belt",
-					price: "$150",
-					imgSrc: "tan_w_hat.png"
-				},
-				{
-					name: "Hanes Tee",
-					price: "$10",
-					imgSrc: "white_sweater.jpeg"
-				},
-				{
-					name: "Janowski",
-					price: "$55",
-					imgSrc: "pink_dress.png"
+					data: {
+						concepts: ["", "Rap", "Car", "Road", "City"]
+					}					
 				}
-			]
+			],
+			// test data: full set of lyrics
+			lyrics: `
+				I'm on the pursuit of happiness, and I know
+				Everything that shine ain't always gonna be gold
+				Hey, I'll be fine once I get it
+				I'll be good
+				I'm on the pursuit of happiness, and I know
+				Everything that shine ain't always gonna be gold
+				Hey, I'll be fine once I get it
+				I'll be good
+			`,
 		}
+	},
+
+	methods: {
+
+		// finds concept words inside of lyrics
+		// could return several snippets with 2, 4, 6, .. lines
+		searchLyrics(lyrics) {
+
+		},
+
+		// splits long string of lyrics into lines at each index of an array
+		getLyricsLines(rawLyrics) {
+
+		},
+
+		// NOTE: name not final
+		// grabs the set of lyrics data that will be searched for
+		// can't be too many, so need to refine search
+
+		// parameters: 
+		// @lyricsQuery properties of songs to use
+		// 	genre, year(s), etc.
+
+		// returns or sets the pool of lyrics data
+		getAllLyrics(lyricsQuery) {
+
+		}
+
 	}
 
 };
 
+
+
+				// Mmmm, ay-oh
+				// Hey... Ratatat, yeah!
+				// Na-na-na-nah
+				// Na-na-na-nah
+
+				// Crush a bit, little bit, roll it up, take a hit
+				// Feeling lit, feeling right, 2 AM, summer night
+				// I don't care, hand on the wheel
+				// Driving drunk, I'm doing my thing
+				// Rolling in the Midwest side and out
+				// Living my life, getting out dreams
+				// People told me slow my roll, I'm screaming out "Fuck that"
+				// I'mma do just what I want, looking ahead, no turning back
+				// If I fall, if I die, know I lived it to the fullest
+				// If I fall, if I die, know I lived and missed some bullets
+
+				// I'm on the pursuit of happiness, and I know
+				// Everything that shine ain't always gonna be gold
+				// Hey, I'll be fine once I get it
+				// I'll be good
+				// I'm on the pursuit of happiness and I know
+				// Everything that shine ain't always gonna be gold
+				// Hey, I'll be fine once I get it
+				// I'll be good
+
+				// Tell me what you know about dreaming, dreaming?
+				// You don't really know about nothing, nothing
+				// Tell me what you know about them night terrors every night
+				// 5 AM, cold sweats, waking up to the sky?
+				// Tell me what you know about dreams, dreams?
+				// Tell me what you know about night terrors? Nothing
+				// You don't really care about the trials of tomorrow
+				// Rather lay awake in the bed full of sorrow
+
+				// I'm on the pursuit of happiness, and I know
+				// Everything that shine ain't always gonna be gold
+				// Hey, I'll be fine once I get it
+				// I'll be good
+				// I'm on the pursuit of happiness, and I know
+				// Everything that shine ain't always gonna be gold
+				// Hey, I'll be fine once I get it
+				// I'll be good
+
+				// I'm on the pursuit of happiness
+				// I know everything that shine ain't always gold
+				// I'll be fine once I get it
+				// I'll be good
+
+				// I'm on the pursuit of happiness, and I know
+				// Everything that shine ain't always gonna be gold
+				// Hey, I'll be fine once I get it
+				// I'll be good
+				// I'm on the pursuit of happiness, and I know
+				// Everything that shine ain't always gonna be gold
+				// Hey, I'll be fine once I get it
+				// I'll be good
+
+				// Pursuit of happiness, yeah
+				// I gon' get it, I'll be good
+				// Oh... oh man, oh, ugh
+				// Room's spinning, room's spinning
+				// Pat, Zuli...
+				// Oh fuck, oh my God
+				// Why'd I drink so much and smoke so much? Oh
+				// Oh, fuck
 </script>
 
 <style>
-.catalog-wrapper {
-	/* background-color: lightgrey; */
-}
-.catalog-col {
-	padding: 15px;
-	height: 45vh;
-}
-.catalog-item {
-	margin: 0px;
-	padding: 5px;
-}
-.catalog-item-img {
-	height: 30vh;
-	object-fit: contain;
-}
 
-
-.ph-h-100 {
-	height: 100%;
-}
-.full-vp {
-	height: 100vh;
-}
-
-.ph-obj-fit-contain {
-	object-fit: contain;
-}
-
-.ph-text-center {
-    text-align: center;
-}
-.ph-mt-2 {
-	margin-top: 20px;
-}
-
-.ph-ms-2 {
-	margin-left: 20px;
-	margin-right: 20px;
-}
-
-.ph-vh-40 {
-	height: 40vh;
-}
 </style>

@@ -5,16 +5,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test": "jest",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
-    "clarifai": "^2.9.0",
-    "material-icons": "^0.2.3",
     "vue": "^2.5.17",
-    "vue-router": "^3.0.1",
-    "vuesax": "^3.7.1"
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.1",
