@@ -13,7 +13,7 @@
 
 export default {
 
-	name: "Home",
+	name: "CaptionCreator",
 
 	data() {
 		return {
