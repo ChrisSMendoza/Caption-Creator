@@ -54,8 +54,15 @@ export default {
 		},
 
 		// splits long string of lyrics into lines at each index of an array
-		getLyricsLines(rawLyrics) {
+		splitLyricsLines(rawLyrics) {
 
+			let rawLines = rawLyrics.split('\n'); // grab anything ending with a newline
+
+			// filter out empty strings
+			let nonEmptyLines = rawLines.filter(line => line.length > 0);
+
+			// remove leading or trailing whitespace
+			return nonEmptyLines.map(line => line.trim()); 
 		},
 
 		// NOTE: name not final
