@@ -27,11 +27,11 @@ export default {
 				},
 				{
 					data: {
-						concepts: ["", "Rap", "Car", "Road", "City"]
+						concepts: ["Man", "Rap", "Car", "Road", "City"]
 					}					
 				}
 			],
-			// test data: full set of lyrics
+			// test data: will be full set of lyrics
 			lyrics: `
 				I'm on the pursuit of happiness, and I know
 				Everything that shine ain't always gonna be gold
@@ -56,13 +56,25 @@ export default {
 		// splits long string of lyrics into lines at each index of an array
 		splitLyricsLines(rawLyrics) {
 
+			let cleanLines = []; // non empty strings without leading or trailing whitespace
 			let rawLines = rawLyrics.split('\n'); // grab anything ending with a newline
 
-			// filter out empty strings
-			let nonEmptyLines = rawLines.filter(line => line.length > 0);
+			rawLines.forEach(line => {
 
-			// remove leading or trailing whitespace
-			return nonEmptyLines.map(line => line.trim()); 
+				// it's a non-empty string
+				if(line.length > 0) {
+					
+					// remove leading or trailing whitespace
+					cleanLines.push(line.trim());
+				}
+			});
+			return cleanLines;
+		},
+
+		// grabs every unique word and its line number(s) from the lyrics
+		// and places it into a map
+		indexLyrics(lyricsLines) {
+
 		},
 
 		// NOTE: name not final
