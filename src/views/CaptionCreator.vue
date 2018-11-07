@@ -75,11 +75,37 @@ export default {
 		// and places it into a map
 		indexLyrics(lyricsLines) {
 
+			let indexedLyrics = new Map();
+
+			lyricsLines.forEach((line, currLineNum) => {
+
+				let words = line.split(" "); // grab the current line's words
+
+				words.forEach(word => {
+
+					// remove any non-alphanumeric characters except apostraphes
+					word = word.replace(/([^a-zA-Z0-9'])/g, "");
+
+					// the word is already indexed
+					if(indexedLyrics.has(word)) {
+
+						let lineNums = indexedLyrics.get(word);
+						lineNums.push(currLineNum); // add the new found line number
+
+						indexedLyrics.set(word, lineNums); // update the word's line index
+					}
+					else {
+						indexedLyrics.set(word, [currLineNum]); // the word is now indexed
+					}
+				});
+			});
+			return indexedLyrics;
 		},
 
 		// NOTE: name not final
 		// grabs the set of lyrics data that will be searched for
 		// can't be too many, so need to refine search
+		// OR could be a lot, but done asyncly or over a server 
 
 		// parameters: 
 		// @lyricsQuery properties of songs to use

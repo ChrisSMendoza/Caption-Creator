@@ -7,13 +7,13 @@ let getTestLyricsMap = () => {
 	let uniqueWords = [
 		"I'm", "on", "the", "pursuit", "of", "happiness", "and", "I",
 		"know","Everything","that","shine","ain't", "always", "gonna",
-		"be","gold","Hey,","I'll","fine","once","get","it","good"
+		"be","gold","Hey","I'll","fine","once","get","it","good"
 	];
 	let eachWordsLineNums = [
-		[1, 5], [1, 2, 3, 5, 6, 7], [1, 5], [1, 5], [1, 5], [1, 5], [1, 5], 
-		[1, 3, 4, 5, 7, 8], [1, 5], [2, 6], [2, 6], [2, 6], [2, 6], [2, 6],
-		[2, 6], [2, 3, 4, 6, 7, 8], [2, 6], [3, 7], [3, 4, 7, 8], [3, 7],
-		[3, 7], [3, 7], [1, 3, 5, 7], [4, 8]
+		[0, 4], [0, 4], [0, 4], [0, 4], [0, 4], [0, 4], [0, 4], 
+		[0, 2, 4, 6], [0, 4], [1, 5], [1, 5], [1, 5], [1, 5], [1, 5],
+		[1, 5], [1, 2, 3, 5, 6, 7], [1, 5], [2, 6], [2, 3, 6, 7], [2, 6],
+		[2, 6], [2, 6], [2, 6], [3, 7]
 	];
 	let testLyricsMap = new Map();
 
@@ -85,6 +85,5 @@ describe('CaptionCreator.vue', () => {
 
 		expect(indexedLyrics).toEqual(testLyricsMap);
 	});
-
 
 });
