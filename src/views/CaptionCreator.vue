@@ -14,7 +14,7 @@ export default {
 	name: "CaptionCreator",
 
 	components: {
-
+	
 	},
 
 	data() {

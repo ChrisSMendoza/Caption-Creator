@@ -1,5 +1,5 @@
 <template>
-	
+	<div>We're grabbing lyrics..</div>
 </template>
 
 
@@ -15,14 +15,15 @@ export default {
 
 	data() {
 		return {
+			// dev, this is will be based off user input
+			lyricRequest: {
+				songName: "Rose Golden",
+				artistName: "Kid Cudi"
+			},
+			lyricsApi: standsLyrics,
 			lyricsLinks: [] // potential urls for the requested song lyrics
 		}
 	}
-
-	mount() {
-
-	}
-
 };
 </script>
 
