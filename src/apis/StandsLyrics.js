@@ -24,7 +24,21 @@ let body = {
     ]
 };
 
+// musicQuery: obj
+// contains the song name and artist name for the lyrics we want to retrieve
+const getLyricsLinks = async (musicQuery) => {
+
+    const {ADMIN_PASS, BASE_URL, TOKEN, USER_ID} = config;
+
+    return await request.get(BASE_URL)
+        .query({ uid: USER_ID})
+        .query({ tokenid: TOKEN })
+        .query({ term: musicQuery.songName })
+        .query({ format: "json" });
+};
+
 export default {
     ...config, // admin pass, token ID, user ID, base URL
-    testResponse: body
+    testResponse: body,
+    getLyricsLinks
 };
