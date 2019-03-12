@@ -1,9 +1,7 @@
 <template>
   
 	<main>
-		Caption Creator
-		
-
+		What image would you like to use?
 	</main>
 
 </template>
@@ -14,6 +12,10 @@
 export default {
 
 	name: "CaptionCreator",
+
+	components: {
+
+	},
 
 	data() {
 		return {
@@ -42,6 +44,7 @@ export default {
 				Hey, I'll be fine once I get it
 				I'll be good
 			`,
+			lyricsLines: null // set in searchLyrics()
 		}
 	},
 
@@ -50,6 +53,14 @@ export default {
 		// finds concept words inside of lyrics
 		// could return several snippets with 2, 4, 6, .. lines
 		searchLyrics(lyrics) {
+
+			this.lyricsLines = this.splitLyricsLines(lyrics);
+			let indexedLyrics = this.indexLyrics(this.lyricsLines);
+
+			let concepts = ["happiness", "sadness"] // dev only, these will come from clarifai
+			let snippets = []; // lines from lyrics that match concepts
+
+			
 
 		},
 

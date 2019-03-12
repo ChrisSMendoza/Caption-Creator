@@ -47,6 +47,9 @@ describe('CaptionCreator.vue', () => {
 		`I'll be good`
 	];
 
+	// happiness is the only matching concept
+	const testConcepts = ["happiness", "sharks", "kid cudi"];
+
 	const ccWrapper = mount(CaptionCreator);
 
 
@@ -78,12 +81,19 @@ describe('CaptionCreator.vue', () => {
 	});
 
 
-	it('should place words and their line numbers into a map', () => {
+	it.skip('should place words and their line numbers into a map', () => {
 
 		let indexedLyrics = ccWrapper.vm.indexLyrics(testLyricsLines);
 		let testLyricsMap = getTestLyricsMap();
 
 		expect(indexedLyrics).toEqual(testLyricsMap);
+	});
+
+
+	it('should return lines from the lyrics that contain concept words', () => {
+
+		
+
 	});
 
 });
