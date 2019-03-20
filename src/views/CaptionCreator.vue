@@ -9,6 +9,7 @@
 
 <script>
 import standsLyricsApi from '@/apis/StandsLyrics.js';
+import { clarifaiClient, clarifaiApp } from '@/apis/clarifai/Clarifai.js';
 
 export default {
 
@@ -27,10 +28,18 @@ export default {
 		// standsLyricsApi.getLyricsLinks(staticQuery)
 		// 	.then(res => this.lyricsLinks = res.body.result)
 		// 	.catch(err => console.log(err));
+
+
+		const staticImageUrl = "https://i.postimg.cc/sDhKPPQt/waterfall.jpg";
+
+		clarifaiApp.models.predict(clarifaiClient.GENERAL_MODEL, staticImageUrl)
+			.then(res => console.log(res))
+			.catch(err => console.log(err));
 	},
 
 	data() {
 		return {
+			clarifaiApp: clarifaiApp, //DEV, show the imported object
 
 			// test data: user enters images and we receive concepts for each
 			clarifaiResponse: [
