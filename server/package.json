@@ -1,0 +1,32 @@
+{
+  "name": "caption-creator-server",
+  "version": "1.0.0",
+  "description": "Scapes lyrics data",
+  "main": "main-server.js",
+  "scripts": {
+    "test": "echo \"No tests yet..\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChrisSMendoza/Caption-Creator.git"
+  },
+  "keywords": [
+    "AI",
+    "Clarifai"
+  ],
+  "author": "Chris Mendoza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChrisSMendoza/Caption-Creator/issues"
+  },
+  "homepage": "https://github.com/ChrisSMendoza/Caption-Creator#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "cors": "^2.8.5",
+    "morgan": "^1.9.1"
+  }
+}
