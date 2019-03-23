@@ -31,7 +31,23 @@ const getLyricsLinks = (req, res) => {
         .then(lyricsResponse => console.log(lyricsResponse.body))
         .catch(err => console.log(err));
 };
+const getUniqueLyricLinks = (results) => {
+
+	let artistNames = new Set();
+
+	return results.filter(result => {
+
+		// this song and artist haven't been tracked yet
+		if(!artistNames.has(result.artist)) {
+			artistNames.add(result.artist); // mark as tracked
+			return true; // add it to filtered results
+		}
+		return false; // don't need this result
+	});
+};
 app.get('/get-lyrics/:term', getLyricsLinks);
+
+
 
 // request(testUrl)
 // 	.then(html => {
