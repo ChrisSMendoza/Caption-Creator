@@ -8,6 +8,7 @@
 
 
 <script>
+import standsLyricsApi from '@/apis/StandsLyrics.js';
 
 export default {
 
@@ -15,6 +16,17 @@ export default {
 
 	components: {
 
+	},
+
+	mounted() {
+		const staticQuery = {
+			songName: "66",
+			artistName: "Lil Yachty"
+		}
+
+		// standsLyricsApi.getLyricsLinks(staticQuery)
+		// 	.then(res => this.lyricsLinks = res.body.result)
+		// 	.catch(err => console.log(err));
 	},
 
 	data() {
@@ -44,7 +56,10 @@ export default {
 				Hey, I'll be fine once I get it
 				I'll be good
 			`,
-			lyricsLines: null // set in searchLyrics()
+			lyricsLines: null, // set in searchLyrics(),
+
+
+			lyricsLinks: null // set in mounted: getLyricsLinks
 		}
 	},
 
