@@ -24,7 +24,8 @@
     "body-parser": "^1.18.3",
     "cheerio": "^1.0.0-rc.2",
     "express": "^4.16.4",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "superagent": "^4.1.0"
   },
   "devDependencies": {
     "cors": "^2.8.5",
