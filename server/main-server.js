@@ -19,6 +19,7 @@ app.use(morgan('tiny'));
 app.use(bodyParser.json({ type: 'application/json' }))
 
 
+// req.params.term: the term used to search for music
 const getLyricsLinks = (req, res) => {
 
 	const {BASE_URL, TOKEN, USER_ID} = standsLyrics;
@@ -28,23 +29,30 @@ const getLyricsLinks = (req, res) => {
         .query({ tokenid: TOKEN })
         .query({ term: req.params.term })
         .query({ format: "json" })
-        .then(lyricsResponse => console.log(lyricsResponse.body))
+        .then(lyricsResponse => {
+    		let music = lyricsResponse.body.result;
+    		
+    		res.send(getUniqueLyricLinks(music));
+        })
         .catch(err => console.log(err));
 };
-const getUniqueLyricLinks = (results) => {
+const getUniqueLyricLinks = (allMusic) => {
 
 	let artistNames = new Set();
 
-	return results.filter(result => {
+	// filter duplicate songs
+	let uniqueSongLyrics = allMusic.filter(musicObj => {
 
 		// this song and artist haven't been tracked yet
-		if(!artistNames.has(result.artist)) {
-			artistNames.add(result.artist); // mark as tracked
+		if(!artistNames.has(musicObj.artist)) {
+			artistNames.add(musicObj.artist); // mark as tracked
 			return true; // add it to filtered results
 		}
 		return false; // don't need this result
 	});
+	return uniqueSongLyrics;
 };
+// use the term provided by the client to search for song lyrics
 app.get('/get-lyrics/:term', getLyricsLinks);
 
 
