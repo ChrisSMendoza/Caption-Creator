@@ -10,6 +10,7 @@ const rp = require('request-promise');
 const request = require('superagent'); // http requests
 
 const standsLyrics = require('./apis/standsLyrics/StandsLyrics.js');
+const mockLyricsResponse = require('./apis/standsLyrics/mockData.js');
 
 const PORT = 8081; // since vue dev server defaults to 8080
 const app = express();
@@ -29,11 +30,7 @@ const getLyricsLinks = (req, res) => {
         .query({ tokenid: TOKEN })
         .query({ term: req.params.term })
         .query({ format: "json" })
-        .then(lyricsResponse => {
-    		let music = lyricsResponse.body.result;
-    		
-    		res.send(getUniqueLyricLinks(music));
-        })
+        .then(getLyrics) // filter lyrics links and scrape their lyrics
         .catch(err => console.log(err));
 };
 const getUniqueLyricLinks = (allMusic) => {
@@ -52,6 +49,38 @@ const getUniqueLyricLinks = (allMusic) => {
 	});
 	return uniqueSongLyrics;
 };
+const getScrapedLyrics = (htmlPages) => {
+
+	let allLyrics = htmlPages.forEach(htmlPage => {
+		return cheerio('#lyric-body-text', htmlPage);
+	});
+	return allLyrics;
+};
+const getLyrics = (lyricsResponse) => {
+	let rawMusicObjs = lyricsResponse.body.result; // possible duplicates
+	const musicObjs = getUniqueLyricLinks(rawMusicObjs); // filter them
+
+	const lyricsHtmlPromises = musicObjs.map(getLyricsHtmlPromise); // to be resolved for lyrics
+
+	Promise.all(lyricsHtmlPromises)
+		.then(getScrapedLyrics)
+		.catch(err => console.log(err));
+};
+const getLyricsHtmlPromise = (musicObj) => {
+
+	return request(musicObj['song-link']);
+};
+
+
+//DEV: USING STATIC RESPONSE
+getLyrics(mockLyricsResponse);
+
+
+
+
+
+
+
 // use the term provided by the client to search for song lyrics
 app.get('/get-lyrics/:term', getLyricsLinks);
 
