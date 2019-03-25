@@ -19,7 +19,7 @@ app.use(cors());
 app.use(morgan('tiny'));
 app.use(bodyParser.json({ type: 'application/json' }))
 
-
+// Get a list of music objects w/ song name, artist name, and links to the lyrics
 // req.params.term: the term used to search for music
 const getLyricsLinks = (req, res) => {
 
@@ -30,15 +30,21 @@ const getLyricsLinks = (req, res) => {
         .query({ tokenid: TOKEN })
         .query({ term: req.params.term })
         .query({ format: "json" })
-        .then(getLyrics) // filter lyrics links and scrape their lyrics
+        .then(getUniqueMusicObjs) // filter lyrics links and scrape their lyrics
         .catch(err => console.log(err));
-};
-const getUniqueLyricLinks = (allMusic) => {
+};// USING STATIC DATA BELOW
+	
+
+
+
+
+const getUniqueMusicObjs = (lyricsResponse) => {
+	let rawMusicObjs = lyricsResponse.body.result; // [{song, artist, links to lyrics}]
 
 	let artistNames = new Set();
 
 	// filter duplicate songs
-	let uniqueSongLyrics = allMusic.filter(musicObj => {
+	let uniqueMusicObjs = rawMusicObjs.filter(musicObj => {
 
 		// this song and artist haven't been tracked yet
 		if(!artistNames.has(musicObj.artist)) {
@@ -47,8 +53,35 @@ const getUniqueLyricLinks = (allMusic) => {
 		}
 		return false; // don't need this result
 	});
-	return uniqueSongLyrics;
+	return uniqueMusicObjs;
 };
+const attachLyricsToMusicObjs = async (uniqueMusicObjs) => {
+
+	const lyricsHtmlRequests = getLyricsHtmlRequests(uniqueMusicObjs);
+
+	try {
+		let lyricsHtmlPages = await Promise.all(lyricsHtmlRequests);
+	} catch(e) {
+		console.log(e);
+	};
+	
+	scrapeLyricsSheet
+
+}
+
+
+
+const getLyricsHtmlRequest = (musicObj) => {
+	return request(musicObj['song-link']);
+};
+const getLyricsHtmlRequests = (uniqueMusicObjs) => {
+
+	uniqueMusicObjs.map(getLyricsHtmlRequest)
+};
+
+
+
+
 const getScrapedLyrics = (htmlPages) => {
 
 	let allLyrics = htmlPages.forEach(htmlPage => {
@@ -56,9 +89,9 @@ const getScrapedLyrics = (htmlPages) => {
 	});
 	return allLyrics;
 };
-const getLyrics = (lyricsResponse) => {
+const getLyricsFromResponse = (lyricsResponse) => {
 	let rawMusicObjs = lyricsResponse.body.result; // possible duplicates
-	const musicObjs = getUniqueLyricLinks(rawMusicObjs); // filter them
+	const musicObjs = getUniqueMusicObjs(rawMusicObjs); // filter them
 
 	const lyricsHtmlPromises = musicObjs.map(getLyricsHtmlPromise); // to be resolved for lyrics
 
@@ -72,8 +105,11 @@ const getLyricsHtmlPromise = (musicObj) => {
 };
 
 
+
 //DEV: USING STATIC RESPONSE
-getLyrics(mockLyricsResponse);
+// getLyrics(mockLyricsResponse);
+
+
 
 
 
