@@ -36,7 +36,13 @@ const getLyricsLinks = (req, res) => {
 	
 
 
+const getLyricsHtmlRequest = (musicObj) => {
+	return request(musicObj['song-link']);
+};
+const getLyricsHtmlRequests = (uniqueMusicObjs) => {
 
+	uniqueMusicObjs.map(getLyricsHtmlRequest)
+};
 
 const getUniqueMusicObjs = (lyricsResponse) => {
 	let rawMusicObjs = lyricsResponse.body.result; // [{song, artist, links to lyrics}]
@@ -59,36 +65,39 @@ const attachLyricsToMusicObjs = async (uniqueMusicObjs) => {
 
 	const lyricsHtmlRequests = getLyricsHtmlRequests(uniqueMusicObjs);
 
-	try {
-		let lyricsHtmlPages = await Promise.all(lyricsHtmlRequests);
-	} catch(e) {
-		console.log(e);
-	};
-	
-	scrapeLyricsSheet
+	// let lyricsHtmlPages = await Promise.all(lyricsHtmlRequests);
+	Promise.all(lyricsHtmlRequests)
+		then(lyricsHtmlPages => {
+			let lyricsSheets = getScrapedLyrics(lyricsHtmlPages);
 
+			lyricsSheets.forEach(sheet => console.log(sheet));// print out all lyrics
+			return lyricsSheets;
+		})
+		.catch(err => {
+			throw err;
+		});
 }
+const getScrapedLyrics = (lyricsHtmlPages) => {
 
-
-
-const getLyricsHtmlRequest = (musicObj) => {
-	return request(musicObj['song-link']);
-};
-const getLyricsHtmlRequests = (uniqueMusicObjs) => {
-
-	uniqueMusicObjs.map(getLyricsHtmlRequest)
-};
-
-
-
-
-const getScrapedLyrics = (htmlPages) => {
-
-	let allLyrics = htmlPages.forEach(htmlPage => {
+	let lyricsSheets = lyricsHtmlPages.forEach(htmlPage => {
 		return cheerio('#lyric-body-text', htmlPage);
 	});
-	return allLyrics;
+	return lyricsSheets;
 };
+
+
+//DEV: USING STATIC RESPONSE
+const musicObjs = getUniqueMusicObjs(mockLyricsResponse);
+
+
+
+
+
+
+
+
+
+
 const getLyricsFromResponse = (lyricsResponse) => {
 	let rawMusicObjs = lyricsResponse.body.result; // possible duplicates
 	const musicObjs = getUniqueMusicObjs(rawMusicObjs); // filter them
@@ -105,9 +114,6 @@ const getLyricsHtmlPromise = (musicObj) => {
 };
 
 
-
-//DEV: USING STATIC RESPONSE
-// getLyrics(mockLyricsResponse);
 
 
 
