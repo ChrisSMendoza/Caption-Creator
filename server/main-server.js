@@ -1,4 +1,5 @@
 // main-server.js
+const fs = require('fs');
 const cors = require('cors');
 const morgan = require('morgan');
 
@@ -44,10 +45,6 @@ const getLyricsHtmlRequests = (uniqueMusicObjs) => {
 
 	return uniqueMusicObjs.map(getLyricsHtmlRequest)
 };
-
-
-
-
 const getLyricsHtmlPages = async (musicObjs) => {
 
 	const lyricsHtmlRequests = getLyricsHtmlRequests(musicObjs);
@@ -87,25 +84,37 @@ const getLyrics = async (req, res) => {
 	const musicObjs = getUniqueMusicObjs(lyricsResponse);
 
 	const lyricsHtmlPages = await getLyricsHtmlPages(musicObjs);
+	// api request, reponse objects are actually returned, can access html with res.text
 
 	let lyricsSheets = getScrapedLyrics(lyricsHtmlPages);
+	// these don't return any text, probably the html being passed in..
+
 	return lyricsSheets
 }
 
-// RUNNING AND TESTING FUNCTIONS HERE
-getLyrics(null, null)
 
 
 
+const mockHTMLPage = fs.readFileSync('./apis/standsLyrics/mockHTMLPage.js', 'utf8');
+
+const scrapeMockHTML = (mockHTML) => {
+	
+	return cheerio('#lyric-body-text', mockHTML).text();
+};
+
+let lyricsSheet = scrapeMockHTML(mockHTMLPage);
+console.log("lyricsSheet: ")
+console.log(lyricsSheet)
 
 
 
+const getScrapedLyrics = (lyricsHtmlPages) => {
 
-
-
-
-
-
+	let lyricsSheets = lyricsHtmlPages.map(htmlPage => {
+		
+	});
+	return lyricsSheets;
+};
 
 const attachLyricsToMusicObjs = async (uniqueMusicObjs) => {
 
@@ -123,14 +132,6 @@ const attachLyricsToMusicObjs = async (uniqueMusicObjs) => {
 			throw err;
 		});
 }
-const getScrapedLyrics = (lyricsHtmlPages) => {
-
-	let lyricsSheets = lyricsHtmlPages.forEach(htmlPage => {
-		return cheerio('#lyric-body-text', htmlPage);
-	});
-	return lyricsSheets;
-};
-
 
 
 const getLyricsFromResponse = (lyricsResponse) => {
@@ -154,12 +155,11 @@ const getLyricsHtmlPromise = (musicObj) => {
 
 
 
-
-
-
-
 // use the term provided by the client to search for song lyrics
-app.get('/get-lyrics/:term', getLyricsLinks);
+app.get('/get-lyrics/:term', getLyrics);
+
+
+
 
 
 
@@ -171,11 +171,6 @@ app.get('/get-lyrics/:term', getLyricsLinks);
 // 		res.send(lyrics.text());
 // 	})
 // 	.catch(err => console.log(err));
-
-
-
-
-
 
 
 console.log(`listening on port ${PORT}`);
