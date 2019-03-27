@@ -42,7 +42,7 @@ const getLyricsHtmlRequest = (musicObj) => {
 };
 const getLyricsHtmlRequests = (uniqueMusicObjs) => {
 
-	uniqueMusicObjs.map(getLyricsHtmlRequest)
+	return uniqueMusicObjs.map(getLyricsHtmlRequest)
 };
 
 
@@ -52,7 +52,7 @@ const getLyricsHtmlPages = async (musicObjs) => {
 
 	const lyricsHtmlRequests = getLyricsHtmlRequests(musicObjs);
 
-	return await Promise.all(lyricsHtmlRequests);
+	return Promise.all(lyricsHtmlRequests);
 }
 
 const getMockApiResonse = () => {
