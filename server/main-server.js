@@ -61,6 +61,8 @@ const getUniqueMusicObjs = (lyricsResponse) => {
 		return false; // don't need this result
 	});
 	return uniqueMusicObjs;
+	console.log("getUniqueMusicObjs:")
+	console.log(uniqueMusicObjs);
 };
 
 
@@ -71,9 +73,19 @@ const getLyricsHtmlPages = async (musicObjs) => {
 	return await Promise.all(lyricsHtmlRequests);
 }
 
+const getMockApiResonse = () => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(mockLyricsResponse), 2000)
+  })
+};
 
 const getLyrics = async (req, res) => {
+
 	//DEV: USING STATIC RESPONSE
+	const lyricsResponse = await getMockApiResonse();
+	console.log("lyricsResponse: ")
+	console.log(lyricsResponse)
+
 	// @mockLyricsResponse will be @lyricsResponse from the api
 	const musicObjs = getUniqueMusicObjs(mockLyricsResponse);
 
@@ -83,10 +95,17 @@ const getLyrics = async (req, res) => {
 	return lyricsSheets
 }
 
-// PROGRAM IS EXECUTED HERE
+// RUNNING AND TESTING FUNCTIONS HERE
 getLyrics(null, null)
-.then(lyricsSheets => console.log(lyricsSheets))
-.catch(err => console.log(err));
+
+
+
+
+
+
+
+
+
 
 
 
@@ -114,15 +133,6 @@ const getScrapedLyrics = (lyricsHtmlPages) => {
 	});
 	return lyricsSheets;
 };
-
-
-
-
-
-
-
-
-
 
 
 
