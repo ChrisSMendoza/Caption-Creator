@@ -11,6 +11,7 @@ const request = require('superagent'); // http requests
 
 const standsLyrics = require('./apis/standsLyrics/StandsLyrics.js');
 const mockLyricsResponse = require('./apis/standsLyrics/mockData.js');
+const reflectPromise = require('./reflect-promise.js');
 
 const PORT = 8081; // since vue dev server defaults to 8080
 const app = express();
@@ -45,8 +46,8 @@ const getLyricsHtmlRequests = (uniqueMusicObjs) => {
 };
 
 const getUniqueMusicObjs = (lyricsResponse) => {
+	
 	let rawMusicObjs = lyricsResponse.body.result; // [{song, artist, links to lyrics}]
-
 	let artistNames = new Set();
 
 	// filter duplicate songs
@@ -61,6 +62,35 @@ const getUniqueMusicObjs = (lyricsResponse) => {
 	});
 	return uniqueMusicObjs;
 };
+
+
+const getLyricsHtmlPages = async (musicObjs) => {
+
+	const lyricsHtmlRequests = getLyricsHtmlRequests(musicObjs);
+
+	return await Promise.all(lyricsHtmlRequests);
+}
+
+
+const getLyrics = async (req, res) => {
+	//DEV: USING STATIC RESPONSE
+	// @mockLyricsResponse will be @lyricsResponse from the api
+	const musicObjs = getUniqueMusicObjs(mockLyricsResponse);
+
+	const lyricsHtmlPages = await getLyricsHtmlPages(musicObjs);
+
+	let lyricsSheets = getScrapedLyrics(lyricsHtmlPages);
+	return lyricsSheets
+}
+
+// PROGRAM IS EXECUTED HERE
+getLyrics(null, null)
+.then(lyricsSheets => console.log(lyricsSheets))
+.catch(err => console.log(err));
+
+
+
+
 const attachLyricsToMusicObjs = async (uniqueMusicObjs) => {
 
 	const lyricsHtmlRequests = getLyricsHtmlRequests(uniqueMusicObjs);
@@ -86,8 +116,6 @@ const getScrapedLyrics = (lyricsHtmlPages) => {
 };
 
 
-//DEV: USING STATIC RESPONSE
-const musicObjs = getUniqueMusicObjs(mockLyricsResponse);
 
 
 
