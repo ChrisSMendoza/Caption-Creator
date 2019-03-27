@@ -45,6 +45,22 @@ const getLyricsHtmlRequests = (uniqueMusicObjs) => {
 	uniqueMusicObjs.map(getLyricsHtmlRequest)
 };
 
+
+
+
+const getLyricsHtmlPages = async (musicObjs) => {
+
+	const lyricsHtmlRequests = getLyricsHtmlRequests(musicObjs);
+
+	return await Promise.all(lyricsHtmlRequests);
+}
+
+const getMockApiResonse = () => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(mockLyricsResponse), 2000)
+  })
+};
+
 const getUniqueMusicObjs = (lyricsResponse) => {
 	
 	let rawMusicObjs = lyricsResponse.body.result; // [{song, artist, links to lyrics}]
@@ -61,33 +77,14 @@ const getUniqueMusicObjs = (lyricsResponse) => {
 		return false; // don't need this result
 	});
 	return uniqueMusicObjs;
-	console.log("getUniqueMusicObjs:")
-	console.log(uniqueMusicObjs);
-};
-
-
-const getLyricsHtmlPages = async (musicObjs) => {
-
-	const lyricsHtmlRequests = getLyricsHtmlRequests(musicObjs);
-
-	return await Promise.all(lyricsHtmlRequests);
-}
-
-const getMockApiResonse = () => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockLyricsResponse), 2000)
-  })
 };
 
 const getLyrics = async (req, res) => {
 
-	//DEV: USING STATIC RESPONSE
-	const lyricsResponse = await getMockApiResonse();
-	console.log("lyricsResponse: ")
-	console.log(lyricsResponse)
+	//DEV: USING STATIC RESPONSE, 
+	const lyricsResponse = await getMockApiResonse(); // replace with getLyricsSheetsForTerm(userTerm)
 
-	// @mockLyricsResponse will be @lyricsResponse from the api
-	const musicObjs = getUniqueMusicObjs(mockLyricsResponse);
+	const musicObjs = getUniqueMusicObjs(lyricsResponse);
 
 	const lyricsHtmlPages = await getLyricsHtmlPages(musicObjs);
 
