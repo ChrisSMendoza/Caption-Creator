@@ -22,7 +22,7 @@ app.use(morgan('tiny'));
 app.use(bodyParser.json({ type: 'application/json' }))
 
 // Get a list of music objects w/ song name, artist name, and links to the lyrics
-// req.params.term: the term used to search for music
+// @req.params.term: the term used to search for music
 const getLyricsLinks = (req, res) => {
 
 	const {BASE_URL, TOKEN, USER_ID} = standsLyrics;
@@ -35,7 +35,13 @@ const getLyricsLinks = (req, res) => {
         .then(getUniqueMusicObjs) // filter lyrics links and scrape their lyrics
         .catch(err => console.log(err));
 };// USING STATIC DATA BELOW
-	
+
+
+const getMockApiResonse = () => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(mockLyricsResponse), 2000)
+  })
+};	
 
 
 const getLyricsHtmlRequest = (musicObj) => {
@@ -52,11 +58,6 @@ const getLyricsHtmlPages = async (musicObjs) => {
 	return Promise.all(lyricsHtmlRequests);
 }
 
-const getMockApiResonse = () => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(mockLyricsResponse), 2000)
-  })
-};
 
 const getUniqueMusicObjs = (lyricsResponse) => {
 	
@@ -76,40 +77,6 @@ const getUniqueMusicObjs = (lyricsResponse) => {
 	return uniqueMusicObjs;
 };
 
-const getLyrics = async (req, res) => {
-
-	//DEV: USING STATIC RESPONSE, 
-	const lyricsResponse = await getMockApiResonse(); // replace with getMusicObjsWithTerm(userTerm)
-
-	const musicObjs = getUniqueMusicObjs(lyricsResponse);
-
-	const lyricsHtmlPages = await getLyricsHtmlPages(musicObjs);
-	// api request, reponse objects are actually returned, can access html with res.text
-
-	appendScrapedLyrics(musicObjs, lyricsHtmlPages);
-	
-	return musicObjs
-}
-
-
-
-getLyrics(null, null)
-.then(musicObjs => {console.log(musicObjs)})
-.catch(err => console.log(err));
-
-
-
-// SCRAPING THE RAW HTML TEXT
-// const mockHTMLPage = fs.readFileSync('./apis/standsLyrics/mockHTMLPage.js', 'utf8');
-
-// const scrapeMockHTML = (mockHTML) => {
-	
-// 	return cheerio('#lyric-body-text', mockHTML).text();
-// };
-
-
-
-
 const appendScrapedLyrics = (musicObjs, lyricsHtmlPages) => {
 
 	//REFACTOR: rename
@@ -127,61 +94,24 @@ const appendScrapedLyrics = (musicObjs, lyricsHtmlPages) => {
 	});
 };
 
-const attachLyricsToMusicObjs = async (uniqueMusicObjs) => {
+const getLyrics = async (req, res) => {
 
-	const lyricsHtmlRequests = getLyricsHtmlRequests(uniqueMusicObjs);
+	//DEV: USING STATIC RESPONSE, 
+	const lyricsResponse = await getMockApiResonse(); // replace with getMusicObjsWithTerm(userTerm)
 
-	// let lyricsHtmlPages = await Promise.all(lyricsHtmlRequests);
-	Promise.all(lyricsHtmlRequests)
-		then(lyricsHtmlPages => {
-			let lyricsSheets = getScrapedLyrics(lyricsHtmlPages);
+	const musicObjs = getUniqueMusicObjs(lyricsResponse);
 
-			lyricsSheets.forEach(sheet => console.log(sheet));// print out all lyrics
-			return lyricsSheets;
-		})
-		.catch(err => {
-			throw err;
-		});
+	const lyricsHtmlPages = await getLyricsHtmlPages(musicObjs);
+	
+	appendScrapedLyrics(musicObjs, lyricsHtmlPages);
+	
+	res.send(musicObjs);
 }
-
-
-const getLyricsFromResponse = (lyricsResponse) => {
-	let rawMusicObjs = lyricsResponse.body.result; // possible duplicates
-	const musicObjs = getUniqueMusicObjs(rawMusicObjs); // filter them
-
-	const lyricsHtmlPromises = musicObjs.map(getLyricsHtmlPromise); // to be resolved for lyrics
-
-	Promise.all(lyricsHtmlPromises)
-		.then(appendScrapedLyrics)
-		.catch(err => console.log(err));
-};
-const getLyricsHtmlPromise = (musicObj) => {
-
-	return request(musicObj['song-link']);
-};
-
-
-
-
-
 
 
 // use the term provided by the client to search for song lyrics
 app.get('/get-lyrics/:term', getLyrics);
 
-
-
-
-
-
-// request(testUrl)
-// 	.then(html => {
-// 		console.log(html)
-
-// 		let lyrics = cheerio('#lyric-body-text', html);
-// 		res.send(lyrics.text());
-// 	})
-// 	.catch(err => console.log(err));
 
 
 console.log(`listening on port ${PORT}`);
