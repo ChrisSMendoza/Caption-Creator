@@ -79,7 +79,7 @@ const getUniqueMusicObjs = (lyricsResponse) => {
 const getLyrics = async (req, res) => {
 
 	//DEV: USING STATIC RESPONSE, 
-	const lyricsResponse = await getMockApiResonse(); // replace with getLyricsSheetsForTerm(userTerm)
+	const lyricsResponse = await getMockApiResonse(); // replace with getMusicObjsWithTerm(userTerm)
 
 	const musicObjs = getUniqueMusicObjs(lyricsResponse);
 
@@ -94,25 +94,33 @@ const getLyrics = async (req, res) => {
 
 
 
+getLyrics(null, null)
+.then(lyricsSheets => console.log(lyricsSheets))
+.catch(err => console.log(err));
 
-const mockHTMLPage = fs.readFileSync('./apis/standsLyrics/mockHTMLPage.js', 'utf8');
 
-const scrapeMockHTML = (mockHTML) => {
+
+// SCRAPING THE RAW HTML TEXT
+// const mockHTMLPage = fs.readFileSync('./apis/standsLyrics/mockHTMLPage.js', 'utf8');
+
+// const scrapeMockHTML = (mockHTML) => {
 	
-	return cheerio('#lyric-body-text', mockHTML).text();
-};
+// 	return cheerio('#lyric-body-text', mockHTML).text();
+// };
 
-let lyricsSheet = scrapeMockHTML(mockHTMLPage);
-console.log("lyricsSheet: ")
-console.log(lyricsSheet)
 
 
 
 const getScrapedLyrics = (lyricsHtmlPages) => {
 
-	let lyricsSheets = lyricsHtmlPages.map(htmlPage => {
-		
+	let lyricsHtmlTexts = lyricsHtmlPages.map(htmlPage => {
+		return htmlPage.text;
 	});
+
+	const lyricsSheets = lyricsHtmlTexts.map(lyricsHtmlText => {
+		return cheerio('#lyric-body-text', lyricsHtmlText).text();
+	});
+
 	return lyricsSheets;
 };
 
