@@ -86,16 +86,15 @@ const getLyrics = async (req, res) => {
 	const lyricsHtmlPages = await getLyricsHtmlPages(musicObjs);
 	// api request, reponse objects are actually returned, can access html with res.text
 
-	let lyricsSheets = getScrapedLyrics(lyricsHtmlPages);
-	// these don't return any text, probably the html being passed in..
-
-	return lyricsSheets
+	appendScrapedLyrics(musicObjs, lyricsHtmlPages);
+	
+	return musicObjs
 }
 
 
 
 getLyrics(null, null)
-.then(lyricsSheets => console.log(lyricsSheets))
+.then(musicObjs => {console.log(musicObjs)})
 .catch(err => console.log(err));
 
 
@@ -111,17 +110,21 @@ getLyrics(null, null)
 
 
 
-const getScrapedLyrics = (lyricsHtmlPages) => {
+const appendScrapedLyrics = (musicObjs, lyricsHtmlPages) => {
+
+	//REFACTOR: rename
+	// lyricsHtmlTexts is the raw source code string
+	// lyricsHtmlPages are network responses with a text property
 
 	let lyricsHtmlTexts = lyricsHtmlPages.map(htmlPage => {
 		return htmlPage.text;
 	});
 
-	const lyricsSheets = lyricsHtmlTexts.map(lyricsHtmlText => {
-		return cheerio('#lyric-body-text', lyricsHtmlText).text();
+	// lyrics were scraped in the same order as received
+	// append scraped lyrics into each music obj
+	lyricsHtmlTexts.forEach((lyricsHtmlText, current) => {
+		musicObjs[current].lyrics = cheerio('#lyric-body-text', lyricsHtmlText).text();
 	});
-
-	return lyricsSheets;
 };
 
 const attachLyricsToMusicObjs = async (uniqueMusicObjs) => {
@@ -149,7 +152,7 @@ const getLyricsFromResponse = (lyricsResponse) => {
 	const lyricsHtmlPromises = musicObjs.map(getLyricsHtmlPromise); // to be resolved for lyrics
 
 	Promise.all(lyricsHtmlPromises)
-		.then(getScrapedLyrics)
+		.then(appendScrapedLyrics)
 		.catch(err => console.log(err));
 };
 const getLyricsHtmlPromise = (musicObj) => {
