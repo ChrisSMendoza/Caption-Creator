@@ -41,7 +41,7 @@ let body = {
 	]
 };
 
-
+// mocks response.body
 module.exports = {
 	body
 };

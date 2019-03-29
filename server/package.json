@@ -4,6 +4,7 @@
   "description": "Scapes lyrics data",
   "main": "main-server.js",
   "scripts": {
+    "dev": "nodemon main-server.js",
     "test": "echo \"No tests yet..\""
   },
   "repository": {
