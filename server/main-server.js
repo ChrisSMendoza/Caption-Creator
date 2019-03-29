@@ -61,7 +61,7 @@ const getLyricsHtmlPages = async (musicObjs) => {
 
 const getUniqueMusicObjs = (lyricsResponse) => {
 	
-	let rawMusicObjs = lyricsResponse.body.result; // [{song, artist, links to lyrics}]
+	let rawMusicObjs = lyricsResponse.body.result; // [{song, artist, links to lyrics}, {...}]
 	let artistNames = new Set();
 
 	// filter duplicate songs
@@ -87,11 +87,15 @@ const appendScrapedLyrics = (musicObjs, lyricsHtmlPages) => {
 		return htmlPage.text;
 	});
 
-	// lyrics were scraped in the same order as received
+	// parse and collect just the lyrics text from its HTML page
+	let lyricsSheets = lyricsHtmlTexts.map(
+		(lyricsHtmlText) => cheerio('#lyric-body-text', lyricsHtmlText).text());
+
+	// get songs' lines that contain the term word (combinations of lines)
+	
+// lyrics were scraped in the same order as received
 	// append scraped lyrics into each music obj
-	lyricsHtmlTexts.forEach((lyricsHtmlText, current) => {
-		musicObjs[current].lyrics = cheerio('#lyric-body-text', lyricsHtmlText).text();
-	});
+	// (__, current)
 };
 
 const getLyrics = async (req, res) => {
@@ -105,8 +109,15 @@ const getLyrics = async (req, res) => {
 	
 	appendScrapedLyrics(musicObjs, lyricsHtmlPages);
 	
-	res.send(musicObjs);
+	// get songs' lines that contain the term word (combinations of lines)
+
+	// res.send(musicObjs);
 }
+
+getLyrics(null, null)
+.then(r => console.log(r))
+.catch(err => console.log(err));
+
 
 
 // use the term provided by the client to search for song lyrics
