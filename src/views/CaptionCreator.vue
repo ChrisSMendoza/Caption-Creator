@@ -2,6 +2,10 @@
   
 	<main>
 		What image would you like to use?
+
+		<pre>
+			{{currentLyrics}}
+		</pre>
 	</main>
 
 </template>
@@ -9,6 +13,7 @@
 
 <script>
 import standsLyricsApi from '@/apis/StandsLyrics.js';
+import request from 'superagent';
 
 export default {
 
@@ -24,6 +29,10 @@ export default {
 			artistName: "Lil Yachty"
 		}
 
+		request.get('http://localhost:8081/get-lyrics/waterfall')
+			.then(res => this.currentLyrics = res.body[0].lyrics)
+			.catch(err => console.log(err));
+
 		// standsLyricsApi.getLyricsLinks(staticQuery)
 		// 	.then(res => this.lyricsLinks = res.body.result)
 		// 	.catch(err => console.log(err));
@@ -31,6 +40,7 @@ export default {
 
 	data() {
 		return {
+			currentLyrics: null, // from api response
 
 			// test data: user enters images and we receive concepts for each
 			clarifaiResponse: [
