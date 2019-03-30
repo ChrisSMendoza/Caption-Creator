@@ -87,6 +87,9 @@ const appendScrapedLyrics = (musicObjs, lyricsHtmlPages) => {
 		return htmlPage.text;
 	});
 
+	console.log("lyricsHtmlPages[0]")
+	console.log(lyricsHtmlPages[0]);
+
 	// parse and collect just the lyrics text from its HTML page
 	let lyricsSheets = lyricsHtmlTexts.map(
 		(lyricsHtmlText) => cheerio('#lyric-body-text', lyricsHtmlText).text());
@@ -107,16 +110,18 @@ const getLyrics = async (req, res) => {
 
 	const lyricsHtmlPages = await getLyricsHtmlPages(musicObjs);
 	
-	appendScrapedLyrics(musicObjs, lyricsHtmlPages);
+	appendScrapedLyrics(musicObjs, lyricsHtmlPages); //DEV: BEING WORKED ON
 	
-	// get songs' lines that contain the term word (combinations of lines)
+	// get songs' lines that contain the term word (combinations of lines) // implemented next
 
 	// res.send(musicObjs);
 }
+// getLyrics(null, null) // RUN THE PROGRAM WITHOUT NETWORK CALLS HERE
+// .then(r => console.log(r))
+// .catch(err => console.log(err));
 
-getLyrics(null, null)
-.then(r => console.log(r))
-.catch(err => console.log(err));
+
+
 
 
 
