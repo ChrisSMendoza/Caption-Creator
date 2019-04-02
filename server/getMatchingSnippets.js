@@ -14,6 +14,15 @@ const splitLyricsByLine = (rawLyrics) => {
 	return trimmedLines;
 }
 
+// filter out repeating lines, keeps duplicates out of final results
+const getUniqueLyricsLines = (lyricsLines) => {
+
+	const filteringSet = new Set(lyricsLines);
+
+	return Array.from(filteringSet);
+};
+
 module.exports = {
+	getUniqueLyricsLines,
 	splitLyricsByLine
 };

@@ -1,5 +1,5 @@
 
-const { splitLyricsByLine } = require('../getMatchingSnippets.js');
+const { getUniqueLyricsLines, splitLyricsByLine } = require('../getMatchingSnippets.js');
 // tests for: 
 // 	getMatchingSnippets(rawLyrics)
 
@@ -42,11 +42,18 @@ describe('getMatchingSnippets', () => {
 		`I'll be good`
 	];
 
+	const testUniqueLyricsLines = [
+		`I'm on the pursuit of happiness, and I know`,
+		`Everything that shine ain't always gonna be gold`,
+		`Hey, I'll be fine once I get it`,
+		`I'll be good`
+	];
+
 	// happiness is the only matching concept
 	const testConcepts = ["happiness", "sharks", "kid cudi"];
 
-
-	it('should split song lyrics into an array of trimmed, non-empty lines', () => {
+	// this tests passes
+	it.skip('should split song lyrics into an array of trimmed, non-empty lines', () => {
 
 		// split the test lyrics 
 		const splitLyrics = splitLyricsByLine(testLyrics);
@@ -57,12 +64,11 @@ describe('getMatchingSnippets', () => {
 	});
 
 
-	it.skip('should place words and their line numbers into a map', () => {
+	it('should filter out any duplicate lines and return the unique lyrics lines', () => {
 
-		let indexedLyrics = ccWrapper.vm.indexLyrics(testLyricsLines);
-		let testLyricsMap = getTestLyricsMap();
+		const uniqueLyricsLines = getUniqueLyricsLines(testLyricsLines);
 
-		expect(indexedLyrics).toEqual(testLyricsMap);
+		expect(uniqueLyricsLines).toEqual(testUniqueLyricsLines);
 	});
 
 
