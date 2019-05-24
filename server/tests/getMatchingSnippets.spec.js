@@ -1,14 +1,17 @@
 
-const { getUniqueLyricsLines, splitLyricsByLine } = require('../getMatchingSnippets.js');
-// tests for: 
-// 	getMatchingSnippets(rawLyrics)
+const { 
+	getConceptsWithLineNumbers, 
+	getUniqueLyricsLines, 
+	splitLyricsByLine 
+} = require('../getMatchingSnippets.js');
+	// tests for: 
+	// 	function getMatchingSnippets(rawLyrics)
 
-// input - @rawLyrics: a long string of lyrics (contains new lines)
+	// input - @rawLyrics: a long string of lyrics (contains new lines)
 
-// output - @snippets: a set of strings that contain the search term
-//
-//[
-	// [
+	// output - @snippets: a set of strings that contain the search term
+	//
+	//[
 	// 		"I'm on the pursuit of happiness, and I know
 	// 		Everything that shine ain't always gonna be gold",
 
@@ -16,7 +19,15 @@ const { getUniqueLyricsLines, splitLyricsByLine } = require('../getMatchingSnipp
 	// 		Everything that shine ain't always gonna be gold
 	// 		Hey, I'll be fine once I get it
 	// 		I'll be good"]
+const getExpectedConceptLineMappings = () => {
 
+	let expectedConceptLineMappings = new Map();
+
+	expectedConceptLineMappings.set("happiness", [0, 4]);
+	expectedConceptLineMappings.set("shine", [1, 5]);
+
+	return expectedConceptLineMappings;
+};
 
 
 describe('getMatchingSnippets', () => {
@@ -49,10 +60,9 @@ describe('getMatchingSnippets', () => {
 		`I'll be good`
 	];
 
-	// happiness is the only matching concept
-	const testConcepts = ["happiness", "sharks", "kid cudi"];
+	// mock Clarifai concept words retrieved from image
+	const testConceptWords = ["happiness", "shine", "sun"]; // 'sun' is not in lyrics
 
-	// this tests passes
 	it.skip('should split song lyrics into an array of trimmed, non-empty lines', () => {
 
 		// split the test lyrics 
@@ -64,12 +74,21 @@ describe('getMatchingSnippets', () => {
 	});
 
 
-	it('should filter out any duplicate lines and return the unique lyrics lines', () => {
+	it.skip('should filter out any duplicate lines and return the unique lyrics lines', () => {
 
 		const uniqueLyricsLines = getUniqueLyricsLines(testLyricsLines);
 
 		expect(uniqueLyricsLines).toEqual(testUniqueLyricsLines);
 	});
+
+
+	it("getConceptsWithLineNumbers should return a map, each concept word is mapped to an array of line numbers", () => {
+
+		const actualConceptLineMappings = getConceptsWithLineNumbers(testLyricsLines, testConceptWords);
+
+		expect(actualConceptLineMappings).toEqual(getExpectedConceptLineMappings());
+	});
+
 
 
 	it.skip('should return lines from the lyrics that contain concept words', () => {
