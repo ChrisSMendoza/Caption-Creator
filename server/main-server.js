@@ -12,7 +12,6 @@ const request = require('superagent'); // http requests
 
 const standsLyrics = require('./apis/standsLyrics/StandsLyrics.js');
 const mockLyricsResponse = require('./apis/standsLyrics/mockData.js');
-const reflectPromise = require('./reflect-promise.js');
 
 const PORT = 8081; // since vue dev server defaults to 8080
 const app = express();
@@ -21,7 +20,9 @@ app.use(cors());
 app.use(morgan('tiny'));
 app.use(bodyParser.json({ type: 'application/json' }))
 
+
 // Get a list of music objects w/ song name, artist name, and links to the lyrics
+//
 // @req.params.term: the term used to search for music
 const getLyricsLinks = (req, res) => {
 
@@ -32,9 +33,9 @@ const getLyricsLinks = (req, res) => {
         .query({ tokenid: TOKEN })
         .query({ term: req.params.term })
         .query({ format: "json" })
-        .then(getUniqueMusicObjs) // filter lyrics links and scrape their lyrics
+        .then(getUniqueMusicObjs) // filter out duplicate lyrics links
         .catch(err => console.log(err));
-};// USING STATIC DATA BELOW
+};
 
 
 const getMockApiResonse = () => {
@@ -51,7 +52,7 @@ const getLyricsHtmlRequests = (uniqueMusicObjs) => {
 
 	return uniqueMusicObjs.map(getLyricsHtmlRequest)
 };
-const getLyricsHtmlPages = async (musicObjs) => {
+const getLyricsHtmlResponses = async (musicObjs) => {
 
 	const lyricsHtmlRequests = getLyricsHtmlRequests(musicObjs);
 
@@ -87,9 +88,6 @@ const appendScrapedLyrics = (musicObjs, lyricsHtmlPages) => {
 		return htmlPage.text;
 	});
 
-	console.log("lyricsHtmlPages[0]")
-	console.log(lyricsHtmlPages[0]);
-
 	// parse and collect just the lyrics text from its HTML page
 	let lyricsSheets = lyricsHtmlTexts.map(
 		(lyricsHtmlText) => cheerio('#lyric-body-text', lyricsHtmlText).text());
@@ -108,13 +106,13 @@ const getLyrics = async (req, res) => {
 
 	const musicObjs = getUniqueMusicObjs(lyricsResponse);
 
-	const lyricsHtmlPages = await getLyricsHtmlPages(musicObjs);
+	const lyricsHtmlResponses = await getLyricsHtmlResponses(musicObjs);
 	
-	appendScrapedLyrics(musicObjs, lyricsHtmlPages); //DEV: BEING WORKED ON
+	appendScrapedLyrics(musicObjs, lyricsHtmlResponses); //DEV: BEING WORKED ON
 	
 	// get songs' lines that contain the term word (combinations of lines) // implemented next
 
-	// res.send(musicObjs);
+	res.send(musicObjs);
 }
 // getLyrics(null, null) // RUN THE PROGRAM WITHOUT NETWORK CALLS HERE
 // .then(r => console.log(r))
@@ -130,5 +128,6 @@ app.get('/get-lyrics/:term', getLyrics);
 
 
 
-console.log(`listening on port ${PORT}`);
-app.listen(PORT);
+app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+
+
