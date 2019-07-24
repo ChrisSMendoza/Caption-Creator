@@ -78,26 +78,18 @@ const getUniqueMusicObjs = (lyricsResponse) => {
 	return uniqueMusicObjs;
 };
 
-const appendScrapedLyrics = (musicObjs, lyricsHtmlPages) => {
 
-	//REFACTOR: rename
-	// lyricsHtmlTexts is the raw source code string
-	// lyricsHtmlPages are network responses with a text property
+const getScrapedLyrics = (lyricsHtmlResponses) => {
 
-	let lyricsHtmlTexts = lyricsHtmlPages.map(htmlPage => {
-		return htmlPage.text;
-	});
-
-	// parse and collect just the lyrics text from its HTML page
-	let lyricsSheets = lyricsHtmlTexts.map(
-		(lyricsHtmlText) => cheerio('#lyric-body-text', lyricsHtmlText).text());
-
-	// get songs' lines that contain the term word (combinations of lines)
-	
-// lyrics were scraped in the same order as received
-	// append scraped lyrics into each music obj
-	// (__, current)
+	// parse lyrics from HTML source code in each response
+	let lyricsSheets = lyricsHtmlResponses.map(scrapeLyricsFromHtmlResponse);
+	return lyricsSheets;
 };
+function scrapeLyricsFromHtmlResponse (lyricsHtmlResponse) {
+
+	const cheerioParse = cheerio('#lyric-body-text', lyricsHtmlResponse.text);
+	return cheerioParse.text();
+}
 
 const getLyrics = async (req, res) => {
 
@@ -108,18 +100,16 @@ const getLyrics = async (req, res) => {
 
 	const lyricsHtmlResponses = await getLyricsHtmlResponses(musicObjs);
 	
-	appendScrapedLyrics(musicObjs, lyricsHtmlResponses); //DEV: BEING WORKED ON
+	//DEV: BEING WORKED ON
+	const lyricsSheets = getScrapedLyrics(lyricsHtmlResponses);
+
+	// append lyrics to their respective music object
 	
-	// get songs' lines that contain the term word (combinations of lines) // implemented next
+
+	// get songs' lines that contain the term word (combinations of lines)
 
 	res.send(musicObjs);
 }
-// getLyrics(null, null) // RUN THE PROGRAM WITHOUT NETWORK CALLS HERE
-// .then(r => console.log(r))
-// .catch(err => console.log(err));
-
-
-
 
 
 
