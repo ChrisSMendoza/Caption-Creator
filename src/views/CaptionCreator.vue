@@ -6,6 +6,14 @@
 
 		<img class="preview-img" :src="imageObjUrl">
 
+		<div class="tabs">
+		 	<ul><!-- class="is-active" -->
+		    	<li v-for="concept in concepts">
+		    		<button>{{concept.name}}</button>
+		    	</li>
+		  	</ul>
+		</div>
+
 	</main>
 
 </template>
@@ -72,6 +80,8 @@ export default {
 			this.imageObjUrl = window.URL.createObjectURL(file);
 		}	
 	},
+
+
 };
 
 </script>
