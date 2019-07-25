@@ -2,6 +2,7 @@
   
 	<main>
 		<input type="file" @change="getConceptsForImage">
+		<img class="preview-img" :src="imageObjUrl">
 	</main>
 
 </template>
@@ -19,6 +20,15 @@ export default {
 
 	},
 
+	data() {
+		return {
+			clarifaiApp: clarifaiApp, //DEV, show the imported object
+
+			concepts: null, // from Clarifai API
+			imageObjUrl: null // from user input, converted to be previewed
+		}
+	},
+
 	mounted() {
 
 		const staticImageUrl = "https://i.postimg.cc/sDhKPPQt/waterfall.jpg";
@@ -31,14 +41,6 @@ export default {
 		// 	.catch(err => console.log(err));
 	},
 
-	data() {
-		return {
-			clarifaiApp: clarifaiApp, //DEV, show the imported object
-
-			concepts: null
-		}
-	},
-
 	methods: {
 		getTopNConceptsFromResponse: function (response, n) {
 
@@ -47,6 +49,10 @@ export default {
 		},
 
 		getConceptsForImage: function (event) {
+			let image = event.target.files[0];
+
+			this.imageObjUrl = window.URL.createObjectURL(image);
+
 			console.log(event.target.files);
 		}
 
@@ -58,5 +64,8 @@ export default {
 </script>
 
 <style>
-
+.preview-img {
+	width: 50vw;
+	height: auto;
+}
 </style>
