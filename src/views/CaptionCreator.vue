@@ -1,8 +1,11 @@
 <template>
   
 	<main>
+
 		<input type="file" @change="getLyricsForImage">
+
 		<img class="preview-img" :src="imageObjUrl">
+
 	</main>
 
 </template>
@@ -66,11 +69,8 @@ export default {
 
 		previewImage: function (file) {
 			this.imageObjUrl = window.URL.createObjectURL(file);
-		}
-
-
-	}
-
+		}	
+	},
 };
 
 </script>
