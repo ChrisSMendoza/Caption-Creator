@@ -91,22 +91,24 @@ function scrapeLyricsFromHtmlResponse (lyricsHtmlResponse) {
 	return cheerioParse.text();
 }
 
+function appendLyricsToMusicObjs(musicObjs, lyricsSheets) {
+
+	return musicObjs.map((musicObj, idx) => musicObj.lyrics = lyricsSheets[idx]);
+}
+
 const getLyrics = async (req, res) => {
 
-	//DEV: USING STATIC RESPONSE, 
 	const lyricsResponse = await getMockApiResonse(); // replace with getMusicObjsWithTerm(userTerm)
 
 	const musicObjs = getUniqueMusicObjs(lyricsResponse);
 
 	const lyricsHtmlResponses = await getLyricsHtmlResponses(musicObjs);
 	
-	//DEV: BEING WORKED ON
 	const lyricsSheets = getScrapedLyrics(lyricsHtmlResponses);
 
-	// append lyrics to their respective music object
-	
+	appendLyricsToMusicObjs(musicObjs, lyricsSheets);
 
-	// get songs' lines that contain the term word (combinations of lines)
+	// TBD: get songs' lines that contain the term word (combinations of lines)
 
 	res.send(musicObjs);
 }
@@ -114,7 +116,7 @@ const getLyrics = async (req, res) => {
 
 
 // use the term provided by the client to search for song lyrics
-app.get('/get-lyrics/:term', getLyrics);
+app.get('/lyrics/:term', getLyrics);
 
 
 
