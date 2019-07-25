@@ -13,7 +13,7 @@ const request = require('superagent'); // http requests
 const standsLyrics = require('./apis/standsLyrics/StandsLyrics.js');
 const mockLyricsResponse = require('./apis/standsLyrics/mockData.js');
 
-const PORT = 8081; // since vue dev server defaults to 8080
+const PORT = process.env.PORT || 8085;
 const app = express();
 
 app.use(cors());

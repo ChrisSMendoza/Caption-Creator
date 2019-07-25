@@ -62,8 +62,9 @@ export default {
 			this.concepts.forEach(concept => {
 
 				request
-					.get(`http://localhost:8081/lyrics/${concept.name}`)
-					.then(res => console.log(res.body));
+					.get(`http://localhost:8086/lyrics/${concept.name}`)
+					.then(res => console.log(res.body))
+					.catch(err => console.error(err));
 			});
 		},
 
