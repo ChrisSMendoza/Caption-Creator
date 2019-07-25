@@ -1,7 +1,7 @@
 <template>
   
 	<main>
-		What image would you like to use?
+		<input type="file" @change="getConceptsForImage">
 	</main>
 
 </template>
@@ -44,7 +44,12 @@ export default {
 
 			const { concepts } = response.outputs[0].data;
 			return concepts.splice(0, n);
+		},
+
+		getConceptsForImage: function (event) {
+			console.log(event.target.files);
 		}
+
 
 	}
 
