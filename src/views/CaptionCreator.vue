@@ -63,7 +63,7 @@ export default {
 
 				request
 					.get(`http://localhost:8086/lyrics/${concept.name}`)
-					.then(res => console.log(res.body))
+					.then(res => concept.music = res.body)
 					.catch(err => console.error(err));
 			});
 		},
