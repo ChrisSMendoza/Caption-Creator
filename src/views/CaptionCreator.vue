@@ -49,11 +49,15 @@ export default {
 		},
 
 		getConceptsForImage: function (event) {
-			let image = event.target.files[0];
+			this.previewImage(event.target.files[0]);
 
-			this.imageObjUrl = window.URL.createObjectURL(image);
+						
+		},
 
-			console.log(event.target.files);
+		previewImage: function (file) {
+			// TODO: check the file is an image
+
+			this.imageObjUrl = window.URL.createObjectURL(file);
 		}
 
 
