@@ -1,37 +1,45 @@
 <template>
   
-	<main>
+	<main class="columns">
 
-		<input type="file" @change="getLyricsForImage">
-
-		<img class="preview-img" :src="imageObjUrl">
-
-		<div class="tabs">
-		 	<ul>
-		    	<li v-for="(concept, idx) in concepts"
-		    		:class="{ 'is-active': isActive(idx) }"
-		    	>
-		    		<a @click="makeActive(idx)">{{concept.name}}</a>
-		    	</li>
-		  	</ul>
+		<div class="column">
+			<!-- <img class="preview-img" :src="imageObjUrl"> -->
+			<img src="cartoon.jpg"> <!-- DEV: static image -->
+			<input type="file" @change="getLyricsForImage">
 		</div>
+		
+		<section class="column is-8">
 
-		<!-- the active concept's lyrics -->
-		<section>
-			<div v-for="(concept, idx) in concepts"
-				v-show="isActive(idx)">
-
-				<!-- scroll down view of all songs that matched this concept -->
-				
-				<Lyrics 
-					v-for="music in concept.music"
-					:songName="music.song"
-					:artistName="music.artist"
-					:lyrics="music.lyrics"
-				/>
-				
-
+			<!-- tabs for each concept -->
+			<div class="tabs">
+			 	<ul>
+			    	<li v-for="(concept, idx) in concepts"
+			    		:class="{ 'is-active': isActive(idx) }"
+			    	>
+			    		<a @click="makeActive(idx)">{{concept.name}}</a>
+			    	</li>
+			  	</ul>
 			</div>
+
+			
+				<div class="overflow-y-scroll vh-80">
+					<!-- the active concept's lyrics view -->
+					<!-- scroll down to see songs that matched concept -->
+					<div v-for="(concept, idx) in concepts"
+						v-show="isActive(idx)"
+						class="m-2">
+						
+						<Lyrics 
+							v-for="music in concept.music"
+							:key="music.artist"
+							:songName="music.song"
+							:artistName="music.artist"
+							:lyrics="music.lyrics"
+						/>
+					</div>
+				</div>
+			
+
 		</section>
 
 	</main>
@@ -118,16 +126,6 @@ export default {
 </script>
 
 <style>
-.preview-img {
-	width: 50vw;
-	height: auto;
-}
-.has-bg-trans {
-	background-color: transparent;
-}
 
-.nav-btn {
-	background-color: transparent;
-	border: none;
-}
+
 </style>

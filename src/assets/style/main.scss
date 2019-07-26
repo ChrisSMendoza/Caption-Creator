@@ -1,0 +1,17 @@
+
+// import the main Bulma Sass file from node_modules
+@import '~bulma/bulma';
+
+.overflow-y-scroll {
+	overflow-y: scroll;
+}
+.vh-80 {
+	height: 80vh;
+}
+
+.m-2 {
+	margin: 1em;
+}
+.mb-2 {
+	margin-bottom: 1em;
+}
