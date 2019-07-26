@@ -7,12 +7,32 @@
 		<img class="preview-img" :src="imageObjUrl">
 
 		<div class="tabs">
-		 	<ul><!-- class="is-active" -->
-		    	<li v-for="concept in concepts">
-		    		<button>{{concept.name}}</button>
+		 	<ul>
+		    	<li v-for="(concept, idx) in concepts"
+		    		:class="{ 'is-active': isActive(idx) }"
+		    	>
+		    		<a @click="makeActive(idx)">{{concept.name}}</a>
 		    	</li>
 		  	</ul>
 		</div>
+
+		<!-- the active concept's lyrics -->
+		<section>
+			<div v-for="(concept, idx) in concepts"
+				v-show="isActive(idx)">
+
+				<!-- scroll down view of all songs that matched this concept -->
+				
+				<Lyrics 
+					v-for="music in concept.music"
+					:songName="music.song"
+					:artistName="music.artist"
+					:lyrics="music.lyrics"
+				/>
+				
+
+			</div>
+		</section>
 
 	</main>
 
@@ -23,31 +43,34 @@
 import { clarifaiClient, clarifaiApp } from '../apis/clarifai/Clarifai.js';
 import request from 'superagent';
 
+import Lyrics from '../components/Lyrics';
+
 import clarifaiMockResponse from '../apis/clarifai/ClarifaiMockResponse.js';
+import mockConceptsAndLyrics from '../mocks/ConceptsAndLyrics.js';
 
 export default {
 
 	name: "CaptionCreator",
 
 	components: {
-
+		Lyrics
 	},
 
 	data() {
 		return {
 			clarifaiApp: clarifaiApp, //DEV, show the imported object
 
-			concepts: null, // from Clarifai API
+			concepts: mockConceptsAndLyrics, // DEV: mock data for now, really from Clarifai API and my API
 
-			imageObjUrl: null // from user input, converted to be previewed
+			imageObjUrl: null, // from user input, converted to be previewed
+
+			currentConceptIdx: 0
 		}
 	},
 
 	mounted() {
 
 		const staticImageUrl = "https://i.postimg.cc/sDhKPPQt/waterfall.jpg";
-
-		this.concepts = this.getTopNConceptsFromResponse(clarifaiMockResponse, 5);
 	},
 
 	methods: {
@@ -78,7 +101,15 @@ export default {
 
 		previewImage: function (file) {
 			this.imageObjUrl = window.URL.createObjectURL(file);
-		}	
+		},
+
+		makeActive: function (newIdx) {
+			this.currentConceptIdx = newIdx;
+		},
+
+		isActive: function (idx) {
+			return (this.currentConceptIdx === idx);
+		}
 	},
 
 
@@ -90,5 +121,13 @@ export default {
 .preview-img {
 	width: 50vw;
 	height: auto;
+}
+.has-bg-trans {
+	background-color: transparent;
+}
+
+.nav-btn {
+	background-color: transparent;
+	border: none;
 }
 </style>
