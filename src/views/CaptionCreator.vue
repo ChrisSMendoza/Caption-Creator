@@ -48,13 +48,29 @@
 
 
 <script>
-import { clarifaiClient, clarifaiApp } from '../apis/clarifai/Clarifai.js';
 import request from 'superagent';
+
+import { clarifaiClient, clarifaiApp } from '../apis/clarifai/Clarifai.js';
 
 import Lyrics from '../components/Lyrics';
 
 import clarifaiMockResponse from '../apis/clarifai/ClarifaiMockResponse.js';
 import mockConceptsAndLyrics from '../mocks/ConceptsAndLyrics.js';
+
+function uploadImageToS3(bucketUrl, file) {
+    
+    let formData = new FormData();
+    formData.append('key', file.name);
+    formData.append('acl', 'bucket-owner-full-control');
+    formData.append('Content-Type', file.type);
+    formData.append("file", file);
+
+    request
+    	.post(bucketUrl)
+    	.send(formData)
+    	.then(console.log(`${file.name} has been uploaded to s3`))
+    	.catch(err => console.error(`uploadImageToS3: ${err}`));
+};
 
 export default {
 
@@ -90,21 +106,26 @@ export default {
 
 		getLyricsForImage: function (event) {
 			// TODO: check the file is an image
+			let file = event.target.files[0];
+			let bucketUrl = "https://caption-creator-images.s3-us-west-1.amazonaws.com/";
+			//"https://s3-us-west-2.amazonaws.com/caption-creator-images";
 
-			this.previewImage(event.target.files[0]);
+			this.previewImage(file);
 
+			uploadImageToS3(bucketUrl, file);
+			
 			// actual API call
 			// clarifaiApp.models.predict(clarifaiClient.GENERAL_MODEL, staticImageUrl)
 			// 	.then(res => console.log(res)) // set concepts
 			// 	.catch(err => console.log(err));
 
-			this.concepts.forEach(concept => {
+			// this.concepts.forEach(concept => {
 
-				request
-					.get(`http://localhost:8086/lyrics/${concept.name}`)
-					.then(res => concept.music = res.body)
-					.catch(err => console.error(err));
-			});
+			// 	request
+			// 		.get(`http://localhost:8086/lyrics/${concept.name}`)
+			// 		.then(res => concept.music = res.body)
+			// 		.catch(err => console.error(err));
+			// });
 		},
 
 		previewImage: function (file) {
