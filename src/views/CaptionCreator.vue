@@ -3,8 +3,7 @@
 	<main class="columns">
 
 		<div class="column">
-			<!-- <img class="preview-img" :src="imageObjUrl"> -->
-			<img src="cartoon.jpg"> <!-- DEV: static image -->
+			<img :src="imageObjUrl">
 			<input type="file" @change="getLyricsForImage">
 		</div>
 		
@@ -21,25 +20,23 @@
 			  	</ul>
 			</div>
 
-			
-				<div class="overflow-y-scroll vh-80">
-					<!-- the active concept's lyrics view -->
-					<!-- scroll down to see songs that matched concept -->
-					<div v-for="(concept, idx) in concepts"
-						v-show="isActive(idx)"
-						class="m-2">
-						
-						<Lyrics 
-							v-for="music in concept.music"
-							:key="music.artist"
-							:songName="music.song"
-							:artistName="music.artist"
-							:lyrics="music.lyrics"
-						/>
-					</div>
+			<!-- the active concept's lyrics view -->
+			<div class="overflow-y-scroll vh-80">
+				<!-- scroll down to see songs that matched concept -->
+				<div v-for="(concept, idx) in concepts"
+					v-show="isActive(idx)"
+					class="m-2">
+					
+					<Lyrics 
+						v-for="music in concept.music"
+						:key="music.artist"
+						:songName="music.song"
+						:artistName="music.artist"
+						:lyrics="music.lyrics"
+					/>
 				</div>
+			</div>
 			
-
 		</section>
 
 	</main>
@@ -108,7 +105,6 @@ export default {
 			// TODO: check the file is an image
 			let file = event.target.files[0];
 			let bucketUrl = "https://caption-creator-images.s3-us-west-1.amazonaws.com/";
-			//"https://s3-us-west-2.amazonaws.com/caption-creator-images";
 
 			this.previewImage(file);
 
