@@ -3,8 +3,16 @@
 	<main class="columns">
 
 		<div class="column">
+			<!-- user image, changes on upload -->
 			<img :src="imageObjUrl">
+
+			<!-- preview the image -->
+			<!-- upload to s3 -->
+			<!-- clarifai, get concepts using uploaded image URL -->
+			<!-- use concepts to retrieve related songs from internal API -->
+			<!-- combine concepts and lyrics, display them accordingly -->
 			<input type="file" @change="getLyricsForImage">
+
 		</div>
 		
 		<section class="column is-8">
@@ -104,7 +112,7 @@ export default {
 				// get AI predicted concepts from uploaded image
 				let clarifaiResponse = await clarifaiApp.models.predict(clarifaiClient.GENERAL_MODEL, imageUrl);
 
-				// retrieve just the concepts from Clarifai response
+				// retrieve a certain number of concepts from Clarifai response
 				let concepts = this.getTopNConceptsFromResponse(clarifaiResponse, numConceptsToConsider);
 			}
 			catch(err) {
