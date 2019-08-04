@@ -48,26 +48,12 @@
 import request from 'superagent';
 
 import { clarifaiClient, clarifaiApp } from '../apis/clarifai/Clarifai.js';
+import s3 from '../apis/s3/s3.js';
 
 import Lyrics from '../components/Lyrics';
 
 import clarifaiMockResponse from '../apis/clarifai/ClarifaiMockResponse.js';
 import mockConceptsAndLyrics from '../mocks/ConceptsAndLyrics.js';
-
-function uploadImageToS3(bucketUrl, file) {
-    
-    let formData = new FormData();
-    formData.append('key', file.name);
-    formData.append('acl', 'bucket-owner-full-control');
-    formData.append('Content-Type', file.type);
-    formData.append("file", file);
-
-    request
-    	.post(bucketUrl)
-    	.send(formData)
-    	.then(console.log(`${file.name} has been uploaded to s3`))
-    	.catch(err => console.error(`uploadImageToS3: ${err}`));
-};
 
 export default {
 
@@ -85,7 +71,10 @@ export default {
 
 			imageObjUrl: null, // from user input, converted to be previewed
 
-			currentConceptIdx: 0
+			currentConceptIdx: 0,
+
+			clarifaiResponse: null, // DEV: API response for viewing in console
+			actualConcepts: []
 		}
 	},
 
@@ -101,19 +90,26 @@ export default {
 			return concepts.splice(0, n);
 		},
 
-		getLyricsForImage: function (event) {
+		getLyricsForImage: async function (event) {
 			// TODO: check the file is an image
 			let file = event.target.files[0];
-			let bucketUrl = "https://caption-creator-images.s3-us-west-1.amazonaws.com/";
+			let imageUrl = s3.getImageUrlFromFilename(file.name);
+			let numConceptsToConsider = 5;
 
 			this.previewImage(file);
 
-			uploadImageToS3(bucketUrl, file);
-			
-			// actual API call
-			// clarifaiApp.models.predict(clarifaiClient.GENERAL_MODEL, staticImageUrl)
-			// 	.then(res => console.log(res)) // set concepts
-			// 	.catch(err => console.log(err));
+			try {
+				await s3.upload(file); // wait for s3 to upload the image
+				
+				// get AI predicted concepts from uploaded image
+				let clarifaiResponse = await clarifaiApp.models.predict(clarifaiClient.GENERAL_MODEL, imageUrl);
+
+				// retrieve just the concepts from Clarifai response
+				let concepts = this.getTopNConceptsFromResponse(clarifaiResponse, numConceptsToConsider);
+			}
+			catch(err) {
+				console.error(`getLyricsForImage: ${err}`);
+			}
 
 			// this.concepts.forEach(concept => {
 
